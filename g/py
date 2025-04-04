@@ -1,0 +1,61 @@
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Правильный URL для загрузки датасета
+url = 'https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv'
+
+# Загрузка датасета
+df = pd.read_csv(url)
+
+# Заголовок приложения
+st.title("Анализ данных о пассажирах Титаника")
+
+# Описательная статистика
+st.subheader("Описательная статистика")
+st.write(df.describe())
+st.write("Типы данных в столбцах:")
+st.write(df.dtypes)
+
+# Форма таблицы
+st.subheader("Форма таблицы")
+st.write(df.shape)
+
+# Распределение возрастов пассажиров
+st.subheader("Распределение возрастов пассажиров")
+plt.figure(figsize=(10, 5))
+sns.histplot(df['Age'].dropna(), bins=30, kde=True)
+st.pyplot(plt)
+plt.clf()  # Очистка текущей фигуры
+
+# Соотношение выживших и невыживших
+st.subheader("Соотношение выживших и невыживших")
+sns.countplot(x='Survived', data=df)
+st.pyplot(plt)
+plt.clf()  # Очистка текущей фигуры
+
+# Выживаемость по классу
+st.subheader("Выживаемость по классу")
+sns.barplot(x='Pclass', y='Survived', data=df)
+st.pyplot(plt)
+plt.clf()  # Очистка текущей фигуры
+
+# Выживаемость по полу
+st.subheader("Выживаемость по полу")
+sns.barplot(x='Sex', y='Survived', data=df)
+st.pyplot(plt)
+plt.clf()  # Очистка текущей фигуры
+
+# Выживаемость по возрасту и полу
+age_filter = st.slider("Выберите максимальный возраст:", 0, 80, 30)
+filtered_df = df[df['Age'] <= age_filter]
+st.subheader("Выживаемость по возрасту и полу")
+sns.countplot(x='Sex', hue='Survived', data=filtered_df)
+st.pyplot(plt)
+plt.clf()  # Очистка текущей фигуры
+
+# Вывод n-го количества строк из начальной таблицы
+n = st.number_input("Введите количество строк для отображения:", min_value=1, max_value=len(df), value=5)
+st.subheader(f"Первые {n} строки таблицы")
+st.write(df.head(n))
